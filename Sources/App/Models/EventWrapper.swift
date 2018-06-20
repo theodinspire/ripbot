@@ -15,6 +15,6 @@ struct EventWrapper: Content, Slack {
     var event: Event
     var type: String
     var eventId: String
-    var eventTime: Int
+    var eventTime: Date
     var authedUsers: [String]
 }

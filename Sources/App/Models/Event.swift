@@ -13,6 +13,9 @@ struct Event: Content {
     var eventTs: String
 
     //  Optional
+    var attachments: [Attachment]?
+    var channel: String?
+
     var user: String?
     var reaction: String?
     var itemUser: String?
