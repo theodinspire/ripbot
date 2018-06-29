@@ -12,7 +12,9 @@ import Regex
 class RipBotController {
     private let matchTable: [Regex: String] = [
         Regex("Build .*\\d+.* failed") : "rip",
-        Regex("sandwich", options: .ignoreCase) : "sandwich"
+        Regex("sandwich", options: .ignoreCase) : "sandwich",
+        Regex("thank(s| you)", options: .ignoreCase) : "thankyou",
+        Regex("ripbot", options: .ignoreCase) : "robot_face",
     ]
 
     func handle(_ request: Request, from slack: Slack) throws -> HTTPResponse {
