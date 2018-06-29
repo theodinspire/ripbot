@@ -13,7 +13,7 @@ class RipBotController {
     private let matchTable: [Regex: String] = [
         Regex("Build .*\\d+.* failed") : "rip",
         Regex("sandwich", options: .ignoreCase) : "sandwich",
-        Regex("thank(s| you)", options: .ignoreCase) : "thankyou",
+        Regex("thank(s| you)", options: .ignoreCase) : "heart",
         Regex("ripbot", options: .ignoreCase) : "robot_face",
     ]
 
