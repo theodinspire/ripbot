@@ -33,7 +33,7 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
 
     /// JSON decoder
     let jsonDecoder = JSONDecoder()
-    jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+//    jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
     jsonDecoder.dateDecodingStrategy = .secondsSince1970
 
     /// Register decoder

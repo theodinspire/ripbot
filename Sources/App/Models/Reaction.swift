@@ -8,7 +8,7 @@
 import Vapor
 
 struct Reaction: Content {
-    let token = ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "null"
+    let token = KeyChain.botToken
     var channel: String
     var timestamp: String
     var name: String

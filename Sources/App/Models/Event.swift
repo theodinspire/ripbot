@@ -10,14 +10,25 @@ import Vapor
 struct Event: Content {
     //  Required
     var type: EventType
-    var eventTs: String
+    var event_ts: String
 
     //  Optional
     var attachments: [Attachment]?
     var channel: String?
 
+    var text: String?
+
     var user: String?
     var reaction: String?
-    var itemUser: String?
+    var item_user: String?
     var item: Item?
+}
+
+extension Event {
+    var allTexts: [String] {
+        return ([text] + (attachments ?? []).flatMap { attachment in
+            [attachment.text, attachment.fallback]
+                + (attachment.fields ?? []).compactMap { field in field.value }
+        }).compactMap { $0 }
+    }
 }

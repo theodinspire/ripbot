@@ -9,6 +9,5 @@ public func routes(_ router: Router) throws {
 
     // RipBot
     let ripBot = RipBotController()
-    router.post(Challenge.self, at: "ripbot", use: ripBot.accept)
-    router.post(EventWrapper.self, at: "ripbot", use: ripBot.handle)
+    router.post(Slack.self, at: "ripbot", use: ripBot.handle)
 }

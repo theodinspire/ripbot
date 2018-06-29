@@ -10,37 +10,57 @@ import Vapor
 import Regex
 
 class RipBotController {
-    func accept(_ request: Request, threat challenge: Challenge) throws -> HTTPResponse {
-        guard challenge.isCanonical else {
-            return HTTPResponse(status: .init(statusCode: 418, reasonPhrase: "I am a teapot"), body: "How appropriate, you fight like a cow!")
+    private let matchTable: [Regex: String] = [
+        Regex("Build .*\\d+.* failed") : "rip",
+        Regex("sandwich", options: .ignoreCase) : "sandwich"
+    ]
+
+    func handle(_ request: Request, from slack: Slack) throws -> HTTPResponse {
+        guard slack.isCanonical else {
+            throw Abort(.forbidden)
         }
 
-        return HTTPResponse(status: .ok, body: challenge.challenge)
-    }
-
-    func handle(_ request: Request, event wrapper: EventWrapper) throws -> HTTPResponse {
-        guard wrapper.isCanonical else {
-            return HTTPResponse(status: .init(statusCode: 418, reasonPhrase: "I am a teapot"), body: "How appropriate, you fight like a cow!")
+        switch slack.type {
+        case .challenge:
+            guard let challenge = slack.challenge else {
+                throw Abort(.badRequest)
+            }
+            return HTTPResponse(status: .ok, body: challenge)
+        case .event:
+            let wrapper = try request.content.decode(EventWrapper.self)
+            let _ = wrapper.map { self.react(to: $0.event, with: request) }
         }
-
-        try react(to: wrapper.event, with: request)
 
         return HTTPResponse(status: .ok)
     }
 
-    private func react(to event: Event, with request: Request) throws {
-        let buildFailureMatch = Regex("Build .*\\d+.* failed")
+    private func react(to event: Event, with request: Request) {
+        guard let channel = event.channel else {
+            return
+        }
 
-        guard let attachments = event.attachments,
-            attachments.contains(where: { attachment in
-                guard let text = attachment.text else { return false }
-                return buildFailureMatch.matches(text)
-            }),
-            let channel = event.channel,
-            let accessToken = ProcessInfo.processInfo.environment["ACCESS_TOKEN"] else { return }
+        var reactions = Set<String>()
+        let texts = event.allTexts
 
-        let rip = Reaction(channel: channel, timestamp: event.eventTs, name: "rip")
+        reactions: for (regex, emote) in matchTable {
+            texts: for text in texts {
+                guard regex.matches(text) else {
+                    continue texts
+                }
 
-        let _ = try request.client().post("https://slack.com/api/reactions.add", headers: ["Authorization": "Bearer \(accessToken)"]) { try $0.content.encode(rip) }
+                reactions.insert(emote)
+                continue reactions
+            }
+        }
+
+        for name in reactions {
+            let reaction = Reaction(channel: channel, timestamp: event.event_ts, name: name)
+
+            do {
+                let _ = try request.client().post("https://slack.com/api/reactions.add", headers: ["Authorization": "Bearer \(KeyChain.botToken)"]) { try $0.content.encode(reaction) }
+            } catch {
+                print(error)
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ import Vapor
 
 struct Attachment: Content {
     //  Required
-    var fallback: String
+    var fallback: String?
 
     //  Optional
     var text: String?
@@ -19,18 +19,18 @@ struct Attachment: Content {
 
     var ts: Date?
 
-    var authorName: String?
-    var authorLink: URL?
-    var authorIcon: URL?
+    var author_name: String?
+    var author_link: URL?
+    var author_icon: URL?
 
     var title: String?
-    var titleLink: URL?
+    var title_link: URL?
 
     var footer: String?
-    var footerIcon: URL?
+    var footer_icon: URL?
 
-    var imageUrl: URL?
-    var thumbUrl: URL?
+    var image_url: URL?
+    var thumb_url: URL?
 
     var fields: [Field]?
     var actions: [Action]?

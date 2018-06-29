@@ -7,14 +7,12 @@
 
 import Vapor
 
-struct EventWrapper: Content, Slack {
+struct EventWrapper: Content {
     //  Properties
-    var token: String
-    var teamId: String
-    var apiAppId: String
-    var event: Event
-    var type: String
-    var eventId: String
-    var eventTime: Date
-    var authedUsers: [String]
+    let team_id: String
+    let api_app_id: String
+    let event: Event
+    let type: String
+    let event_id: String
+    let event_time: Date
 }
