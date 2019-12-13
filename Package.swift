@@ -11,7 +11,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-sqlite.git", from: "3.0.0-rc.2"),
 
         // Other external libraries
-        .package(url: "https://github.com/sharplet/Regex.git", from: "1.1.0"),
+        .package(url: "https://github.com/sharplet/Regex.git", from: "2.1.0"),
     ],
     targets: [
         .target(name: "App", dependencies: ["FluentSQLite", "Vapor", "Regex"]),
