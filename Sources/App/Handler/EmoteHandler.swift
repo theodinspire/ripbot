@@ -9,8 +9,8 @@ import Foundation
 import Regex
 
 class EmoteHandler : Handler {
-    static let address = //"https://slack.com/api/reactions.add"
-        "https://www.mocky.io/v2/5185415ba171ea3a00704eed"
+    static let address = "https://slack.com/api/reactions.add"
+//        "https://www.mocky.io/v2/5185415ba171ea3a00704eed"
 
     let pattern: Regex
     let emote: String
@@ -45,12 +45,14 @@ class EmoteHandler : Handler {
                     return
                 }
 
-                guard let data = data else {
-                    print ("Error parsing data")
+                guard let data = data,
+                    let response = response as? HTTPURLResponse else {
+                    print ("Error parsing data or response")
                     return
                 }
 
                 print(String(data: data, encoding: .utf8) ?? "What string")
+                print("Status code:", response.statusCode)
             }
         } catch {
             print(error)
