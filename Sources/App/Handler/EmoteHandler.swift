@@ -39,21 +39,23 @@ class EmoteHandler : Handler {
 
         do {
             request.httpBody = try JSONEncoder().encode(reaction)
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    print("Error:", error)
-                    return
-                }
+            URLSession.shared.dataTask(
+                with: request,
+                completionHandler: { data, response, error in
+                    if let error = error {
+                        print("Error:", error)
+                        return
+                    }
 
-                guard let data = data,
-                    let response = response as? HTTPURLResponse else {
-                    print ("Error parsing data or response")
-                    return
-                }
+                    guard let data = data,
+                        let response = response as? HTTPURLResponse else {
+                        print ("Error parsing data or response")
+                        return
+                    }
 
-                print(String(data: data, encoding: .utf8) ?? "What string")
-                print("Status code:", response.statusCode)
-            }
+                    print(String(data: data, encoding: .utf8) ?? "What string")
+                    print("Status code:", response.statusCode)
+                    }).resume()
         } catch {
             print(error)
         }
