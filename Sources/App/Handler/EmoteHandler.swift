@@ -45,6 +45,7 @@ class EmoteHandler : Handler {
 				with: request,
 				completionHandler: { data, response, error in
 					let terminal = Terminal()
+					print("Request sent.")
 
 					if let error = error {
 						terminal.output("Error: ".consoleText(color: .red) + "\(error)".consoleText())

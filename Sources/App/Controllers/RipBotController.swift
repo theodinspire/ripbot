@@ -45,6 +45,8 @@ class RipBotController {
 	}
 
 	func act(upon event: Event) {
+		print("Handling response for event \(event.event_ts)")
+
 		for handler in handlers {
 			DispatchQueue.global(qos: .background).async {
 				handler.act(on: event)
