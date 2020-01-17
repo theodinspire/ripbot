@@ -28,7 +28,7 @@ class EmoteHandler : Handler {
 		}
 
 		guard let channel = event.channel,
-			let url = URL(string: Self.address) else {
+			let url = URL(string: EmoteHandler.address) else {
 				return
 		}
 
