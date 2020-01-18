@@ -39,7 +39,7 @@ class EmoteHandler : Handler {
 		request.httpMethod = "POST"
 		request.setValue(
 			"Bearer \(KeyChain.botToken)", forHTTPHeaderField: "Authorization")
-//		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
 		do {
 			let body = try JSONEncoder().encode(reaction)
