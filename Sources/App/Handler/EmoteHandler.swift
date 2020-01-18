@@ -31,7 +31,6 @@ class EmoteHandler : Handler {
 
 		guard let channel = event.channel,
 			let url = URL(string: EmoteHandler.address) else {
-				terminal.output("Channel or URL not parsed")
 				return
 		}
 
@@ -44,7 +43,15 @@ class EmoteHandler : Handler {
 
 		do {
 			terminal.output("Sending reaction \(emote).".consoleText(color: .yellow))
-			request.httpBody = try JSONEncoder().encode(reaction)
+			let body = try JSONEncoder().encode(reaction)
+			request.httpBody = body
+
+			let bodyString = String(data: body, encoding: .utf8)
+				?? "Could not parse body."
+			terminal.output((request.allHTTPHeaderFields?.debugDescription
+				?? "No headers found").consoleText(color: .brightMagenta))
+			terminal.output(bodyString.consoleText(color: .brightYellow))
+
 			URLSession.shared.dataTask(
 				with: request,
 				completionHandler: { data, response, error in
@@ -64,6 +71,17 @@ class EmoteHandler : Handler {
 
 					guard response.statusCode == 200 else {
 						terminal.error("Invalid response code: \(response.statusCode)")
+
+						let content =
+							String(data: data, encoding: .utf8)
+								?? "What string"
+						let lines = content.components(separatedBy: "\n")
+						let start = max(0, lines.endIndex - 10)
+
+						for line in lines[start..<lines.endIndex].map({ $0.consoleText(color: .green) }) {
+							terminal.output(line)
+						}
+
 						return
 					}
 
