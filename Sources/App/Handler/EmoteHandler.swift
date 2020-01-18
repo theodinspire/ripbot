@@ -45,7 +45,11 @@ class EmoteHandler : Handler {
 
 			URLSession.shared.dataTask(
 				with: request,
-				completionHandler: { _,_,_ in }).resume()
+				completionHandler: { _, response,_ in
+					if let response = response as? HTTPURLResponse {
+						Terminal().error("Invalid status code: \(response.statusCode)")
+					}
+			}).resume()
 		} catch {
 			Terminal().error("Error making reaction \(emote) to message \(event.event_ts): \(error.localizedDescription)")
 		}
