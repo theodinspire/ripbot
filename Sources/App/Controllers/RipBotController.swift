@@ -7,6 +7,7 @@
 
 import Vapor
 
+import Dispatch
 import Regex
 
 class RipBotController {
@@ -15,6 +16,13 @@ class RipBotController {
         Regex("sandwich", options: .ignoreCase) : "sandwich",
         Regex("thank(s| you)", options: .ignoreCase) : "heart",
         Regex("ripbot", options: .ignoreCase) : "robot_face",
+    ]
+
+    private let handlers: [Handler] = [
+        EmoteHandler("rip", on: "Build .*\\d+.* failed"),
+        EmoteHandler("sandwich", on: "sandwich"),
+        EmoteHandler("heart", on: "thank(s| you)"),
+        EmoteHandler("robot_face", on: "ripbot")
     ]
 
     func handle(_ request: Request, from slack: Slack) throws -> HTTPResponse {
@@ -29,39 +37,17 @@ class RipBotController {
             }
             return HTTPResponse(status: .ok, body: challenge)
         case .event:
-            let wrapper = try request.content.decode(EventWrapper.self)
-            let _ = wrapper.map { self.react(to: $0.event, with: request) }
+            let _ = try request.content.decode(EventWrapper.self)
+				.map { self.act(upon: $0.event) }
         }
 
         return HTTPResponse(status: .ok)
     }
 
-    private func react(to event: Event, with request: Request) {
-        guard let channel = event.channel else {
-            return
-        }
-
-        var reactions = Set<String>()
-        let texts = event.allTexts
-
-        reactions: for (regex, emote) in matchTable {
-            texts: for text in texts {
-                guard regex.matches(text) else {
-                    continue texts
-                }
-
-                reactions.insert(emote)
-                continue reactions
-            }
-        }
-
-        for name in reactions {
-            let reaction = Reaction(channel: channel, timestamp: event.event_ts, name: name)
-
-            do {
-                let _ = try request.client().post("https://slack.com/api/reactions.add", headers: ["Authorization": "Bearer \(KeyChain.botToken)"]) { try $0.content.encode(reaction) }
-            } catch {
-                print(error)
+    func act(upon event: Event) {
+        for handler in handlers {
+            DispatchQueue.global(qos: .background).async {
+                handler.act(on: event)
             }
         }
     }
