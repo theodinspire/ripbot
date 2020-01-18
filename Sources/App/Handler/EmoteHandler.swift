@@ -41,13 +41,17 @@ class EmoteHandler : Handler {
 			"Bearer \(KeyChain.botToken)", forHTTPHeaderField: "Authorization")
 
 		do {
-			request.httpBody = try JSONEncoder().encode(reaction)
+			let data = try JSONEncoder().encode(reaction)
+			request.httpBody = data
 
 			URLSession.shared.dataTask(
 				with: request,
 				completionHandler: { _, response,_ in
-					if let response = response as? HTTPURLResponse {
-						Terminal().error("Invalid status code: \(response.statusCode)")
+					if let response = response as? HTTPURLResponse,
+						let contents = String(data: data, encoding: .utf8) {
+						let terminal = Terminal()
+						terminal.output(contents.consoleText(color: .brightYellow))
+						terminal.output("Status code: \(response.statusCode)".consoleText(color: .yellow))
 					}
 			}).resume()
 		} catch {
