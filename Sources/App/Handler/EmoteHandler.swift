@@ -39,20 +39,30 @@ class EmoteHandler : Handler {
 		request.httpMethod = "POST"
 		request.setValue(
 			"Bearer \(KeyChain.botToken)", forHTTPHeaderField: "Authorization")
+//		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
 		do {
-			let data = try JSONEncoder().encode(reaction)
-			request.httpBody = data
+			let body = try JSONEncoder().encode(reaction)
+			request.httpBody = body
 
 			URLSession.shared.dataTask(
 				with: request,
-				completionHandler: { _, response,_ in
-					if let response = response as? HTTPURLResponse,
-						let contents = String(data: data, encoding: .utf8) {
-						let terminal = Terminal()
-						terminal.output(contents.consoleText(color: .brightYellow))
-						terminal.output("Status code: \(response.statusCode)".consoleText(color: .yellow))
+				completionHandler: { data, response, error in
+					if let _ = error { return }
+
+					let terminal = Terminal()
+
+					guard let _ = response as? HTTPURLResponse else {
+						terminal.error("Incorrect response type.")
+						return
 					}
+
+					guard let data = data, let contents = String(data: data, encoding: .utf8) else {
+						terminal.error("Could not parse response")
+						return
+					}
+
+					terminal.output(contents.consoleText(color: .brightYellow))
 			}).resume()
 		} catch {
 			Terminal().error("Error making reaction \(emote) to message \(event.event_ts): \(error.localizedDescription)")
