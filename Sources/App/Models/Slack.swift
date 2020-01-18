@@ -8,13 +8,13 @@
 import Vapor
 
 struct Slack: Content {
-    let token: String
-    let type: SlackRequestType
-    let challenge: String?
+	let token: String
+	let type: SlackRequestType
+	let challenge: String?
 
-    var isCanonical: Bool {
-        get {
-            return token == KeyChain.verificationToken
-        }
-    }
+	var isCanonical: Bool {
+		get {
+			return token == KeyChain.verificationToken
+		}
+	}
 }

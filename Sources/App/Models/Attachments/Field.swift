@@ -8,7 +8,7 @@
 import Vapor
 
 struct Field: Content {
-    var title: String
-    var value: String
-    var short: Bool
+	var title: String
+	var value: String
+	var short: Bool
 }

@@ -8,7 +8,7 @@
 import Vapor
 
 struct Item: Content {
-    var type: String
-    var channel: String
-    var ts: String
+	var type: String
+	var channel: String
+	var ts: String
 }

@@ -8,8 +8,8 @@
 import Vapor
 
 struct Action: Content {
-    var type: String
-    var text: String
-    var url: String
-    var style: String
+	var type: String
+	var text: String
+	var url: String
+	var style: String
 }

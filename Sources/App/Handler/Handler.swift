@@ -8,5 +8,5 @@
 import Foundation
 
 protocol Handler {
-    func act(on event: Event)
+	func act(on event: Event)
 }

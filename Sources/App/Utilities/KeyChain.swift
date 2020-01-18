@@ -8,12 +8,12 @@
 import Foundation
 
 class KeyChain {
-    static let verificationToken =
-        (ProcessInfo.processInfo.environment["VERIFICATION_TOKEN"]) ?? ""
-
-    static let accessToken =
-        (ProcessInfo.processInfo.environment["ACCESS_TOKEN"]) ?? ""
-
-    static let botToken =
-        (ProcessInfo.processInfo.environment["BOT_TOKEN"]) ?? ""
+	static let verificationToken =
+		(ProcessInfo.processInfo.environment["VERIFICATION_TOKEN"]) ?? ""
+	
+	static let accessToken =
+		(ProcessInfo.processInfo.environment["ACCESS_TOKEN"]) ?? ""
+	
+	static let botToken =
+		(ProcessInfo.processInfo.environment["BOT_TOKEN"]) ?? ""
 }

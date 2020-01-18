@@ -3,40 +3,40 @@ import Vapor
 
 /// Called before your application initializes.
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
-    /// Register providers first
-    try services.register(FluentSQLiteProvider())
+	/// Register providers first
+	try services.register(FluentSQLiteProvider())
 
-    /// Register routes to the router
-    let router = EngineRouter.default()
-    try routes(router)
-    services.register(router, as: Router.self)
+	/// Register routes to the router
+	let router = EngineRouter.default()
+	try routes(router)
+	services.register(router, as: Router.self)
 
-    /// Register middleware
-    var middlewares = MiddlewareConfig() // Create _empty_ middleware config
-    /// middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
-    middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
-    services.register(middlewares)
+	/// Register middleware
+	var middlewares = MiddlewareConfig() // Create _empty_ middleware config
+	/// middlewares.use(FileMiddleware.self) // Serves files from `Public/` directory
+	middlewares.use(ErrorMiddleware.self) // Catches errors and converts to HTTP response
+	services.register(middlewares)
 
-    // Configure a SQLite database
-//    let sqlite = try SQLiteDatabase(storage: .memory)
+	// Configure a SQLite database
+//	let sqlite = try SQLiteDatabase(storage: .memory)
 
-    /// Register the configured SQLite database to the database config.
-//    var databases = DatabasesConfig()
-//    databases.add(database: sqlite, as: .sqlite)
-//    services.register(databases)
+	/// Register the configured SQLite database to the database config.
+//	var databases = DatabasesConfig()
+//	databases.add(database: sqlite, as: .sqlite)
+//	services.register(databases)
 
-    /// Configure migrations
-//    var migrations = MigrationConfig()
+	/// Configure migrations
+//	var migrations = MigrationConfig()
 
-    /// Create default content configuration
-    var contentConfig = ContentConfig.default()
+	/// Create default content configuration
+	var contentConfig = ContentConfig.default()
 
-    /// JSON decoder
-    let jsonDecoder = JSONDecoder()
-//    jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-    jsonDecoder.dateDecodingStrategy = .secondsSince1970
+	/// JSON decoder
+	let jsonDecoder = JSONDecoder()
+//	jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+	jsonDecoder.dateDecodingStrategy = .secondsSince1970
 
-    /// Register decoder
-    contentConfig.use(decoder: jsonDecoder, for: .json)
-    services.register(contentConfig)
+	/// Register decoder
+	contentConfig.use(decoder: jsonDecoder, for: .json)
+	services.register(contentConfig)
 }

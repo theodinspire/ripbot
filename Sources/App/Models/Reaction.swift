@@ -8,8 +8,8 @@
 import Vapor
 
 struct Reaction: Content {
-    let token = KeyChain.botToken
-    var channel: String
-    var timestamp: String
-    var name: String
+	let token = KeyChain.botToken
+	var channel: String
+	var timestamp: String
+	var name: String
 }
