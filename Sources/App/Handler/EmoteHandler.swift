@@ -48,21 +48,20 @@ class EmoteHandler : Handler {
 			URLSession.shared.dataTask(
 				with: request,
 				completionHandler: { data, response, error in
-					if let _ = error { return }
-
-					let terminal = Terminal()
-
-					guard let _ = response as? HTTPURLResponse else {
-						terminal.error("Incorrect response type.")
+					if let error = error {
+						Terminal().error(error.localizedDescription)
 						return
 					}
 
-					guard let data = data, let contents = String(data: data, encoding: .utf8) else {
-						terminal.error("Could not parse response")
+					guard let response = response as? HTTPURLResponse else {
+						Terminal().error("Incorrect response type.")
 						return
 					}
 
-					terminal.output(contents.consoleText(color: .brightYellow))
+					guard response.statusCode == 200 else {
+						Terminal().error("Invalid status code: \(response.statusCode)")
+						return
+					}
 			}).resume()
 		} catch {
 			Terminal().error("Error making reaction \(emote) to message \(event.event_ts): \(error.localizedDescription)")
