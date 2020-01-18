@@ -23,12 +23,15 @@ class EmoteHandler : Handler {
 	}
 
 	func act(on event: Event) {
-		guard event.allTexts.allSatisfy(pattern.matches(_:)) else {
+		let terminal = Terminal()
+
+		guard event.allTexts.contains(where: pattern.matches(_:)) else {
 			return
 		}
 
 		guard let channel = event.channel,
 			let url = URL(string: EmoteHandler.address) else {
+				terminal.output("Channel or URL not parsed")
 				return
 		}
 
@@ -40,6 +43,7 @@ class EmoteHandler : Handler {
 			"Bearer \(KeyChain.botToken)", forHTTPHeaderField: "Authorization")
 
 		do {
+			terminal.output("Sending reaction \(emote).".consoleText(color: .yellow))
 			request.httpBody = try JSONEncoder().encode(reaction)
 			URLSession.shared.dataTask(
 				with: request,
