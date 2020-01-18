@@ -37,8 +37,8 @@ class RipBotController {
             }
             return HTTPResponse(status: .ok, body: challenge)
         case .event:
-            let wrapper = try request.content.decode(EventWrapper.self).wait()
-            act(upon: wrapper.event)
+            let _ = try request.content.decode(EventWrapper.self)
+				.map { self.act(upon: $0.event) }
         }
 
         return HTTPResponse(status: .ok)
